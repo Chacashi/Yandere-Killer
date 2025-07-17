@@ -14,9 +14,7 @@ public class SettingManager : MonoBehaviour
     private void Awake()
     {
         filePath = Path.Combine(Application.persistentDataPath, "settings.json");
-
         Load();
-
         OnSettingsLoaded?.Invoke(currentSettings);
     }
 
@@ -27,11 +25,7 @@ public class SettingManager : MonoBehaviour
 
     private void Save()
     {
-        if (OnSettingsRequest != null)
-        {
-            currentSettings = OnSettingsRequest.Invoke();
-        }
-
+        currentSettings = OnSettingsRequest.Invoke();
         json = JsonUtility.ToJson(currentSettings, true);
         File.WriteAllText(filePath, json);
     }
