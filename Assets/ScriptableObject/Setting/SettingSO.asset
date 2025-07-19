@@ -12,3 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe83ad39c8420204caf7dac3ad5d2270, type: 3}
   m_Name: SettingSO
   m_EditorClassIdentifier: 
+  currentSettings:
+    master: 1
+    music: 0.537
+    sfx: 1
+    sensibility: 0
+  master: 0
+  music: 0
+  sfx: 0

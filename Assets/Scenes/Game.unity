@@ -350,6 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2eba6446eea0af4ea24a78b30cfdf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  limitVerticalAxis: {x: -10, y: 45}
   sensitivity: 1
 --- !u!1 &346867629
 GameObject:

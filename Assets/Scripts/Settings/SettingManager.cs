@@ -1,21 +1,28 @@
-using System;
 using System.IO;
 using UnityEngine;
 
-public class SettingManager : MonoBehaviour
+public  class  SettingManager : MonoBehaviour
 {
-    public static Action<SettingJSON> OnSettingsLoaded;
-    public static Func<SettingJSON> OnSettingsRequest;
+    public static SettingManager instance;
 
+    [SerializeField] private SettingSO settingSO;
     private SettingJSON currentSettings;
     private string filePath;
     private string json;
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         filePath = Path.Combine(Application.persistentDataPath, "settings.json");
         Load();
-        OnSettingsLoaded?.Invoke(currentSettings);
     }
 
     private void OnApplicationQuit()
@@ -25,7 +32,6 @@ public class SettingManager : MonoBehaviour
 
     private void Save()
     {
-        currentSettings = OnSettingsRequest.Invoke();
         json = JsonUtility.ToJson(currentSettings, true);
         File.WriteAllText(filePath, json);
     }
@@ -39,7 +45,7 @@ public class SettingManager : MonoBehaviour
         }
         else
         {
-            currentSettings = new SettingJSON(); 
+
         }
     }
 }
