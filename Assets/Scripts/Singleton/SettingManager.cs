@@ -1,51 +1,45 @@
-using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public  class  SettingManager : MonoBehaviour
 {
-    public static SettingManager instance;
+    [SerializeField] private SettingSO audioSettings;
 
-    [SerializeField] private SettingSO settingSO;
-    private SettingJSON currentSettings;
-    private string filePath;
-    private string json;
-
+    [Header("Sliders")]
+    [SerializeField] private Slider sliderMaster;
+    [SerializeField] private Slider sliderMusic;
+    [SerializeField] private Slider sliderSFX;
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        filePath = Path.Combine(Application.persistentDataPath, "settings.json");
-        Load();
+        audioSettings.LoadVolumes();
     }
 
-    private void OnApplicationQuit()
+    private void Start()
     {
-        Save();
+        sliderMaster.value = audioSettings.GetMasterVolume();
+        sliderMusic.value = audioSettings.GetMusicVolume();
+        sliderSFX.value = audioSettings.GetSFXVolume();
+
+        sliderMaster.onValueChanged.AddListener(UpdateMasterVolume);
+        sliderMusic.onValueChanged.AddListener(UpdateMusicVolume);
+        sliderSFX.onValueChanged.AddListener(UpdateSFXVolume);
+
+        UpdateMasterVolume(sliderMaster.value);
+        UpdateMusicVolume(sliderMusic.value);
+        UpdateSFXVolume(sliderSFX.value);
+    }
+    private void UpdateMasterVolume(float value)
+    {
+        audioSettings.SetMasterVolume(value);
     }
 
-    private void Save()
+    private void UpdateMusicVolume(float value)
     {
-        json = JsonUtility.ToJson(currentSettings, true);
-        File.WriteAllText(filePath, json);
+        audioSettings.SetMusicVolume(value);
     }
 
-    private void Load()
+    private void UpdateSFXVolume(float value)
     {
-        if (File.Exists(filePath))
-        {
-            json = File.ReadAllText(filePath);
-            currentSettings = JsonUtility.FromJson<SettingJSON>(json);
-        }
-        else
-        {
-
-        }
+        audioSettings.SetSFXVolume(value);
     }
 }
