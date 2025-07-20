@@ -18,6 +18,12 @@ public class SettingSO : ScriptableObject
     [Range(0f, 1f)][SerializeField] private float musicVolume;
     [Range(0f, 1f)][SerializeField] private float sfxVolume;
 
+    [Header("Sensibility")]
+    [Range(0f, 1f)][SerializeField] private float sensibilityHorizontal;
+    [Range(0f, 1f)][SerializeField] private float sensibilityVertical;
+    public float SensibilityHorizontal => sensibilityHorizontal;
+    public float SensibilityVertical => sensibilityVertical;
+
     private string filePath => Path.Combine(Application.persistentDataPath, "SettingSO.json");
 
     public void SetMasterVolume(float volume)
@@ -48,6 +54,8 @@ public class SettingSO : ScriptableObject
             masterVolume = data.masterVolume;
             musicVolume = data.musicVolume;
             sfxVolume = data.sfxVolume;
+            sensibilityHorizontal = data.sensibilityHorizontal;
+            sensibilityVertical = data.sensibilityVertical;
         }
 
         SetMasterVolume(masterVolume);
@@ -57,7 +65,7 @@ public class SettingSO : ScriptableObject
 
     public void SaveVolumes()
     {
-        SettingJSON data = new SettingJSON(masterVolume,musicVolume,sfxVolume);
+        SettingJSON data = new SettingJSON(masterVolume,musicVolume,sfxVolume,sensibilityHorizontal, sensibilityVertical);
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
     }

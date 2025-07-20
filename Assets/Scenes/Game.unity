@@ -351,7 +351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   limitVerticalAxis: {x: -10, y: 45}
-  sensitivity: 1
+  setting: {fileID: 11400000, guid: dbae25f3c4aff2441a1308f067ff42ea, type: 2}
 --- !u!1 &346867629
 GameObject:
   m_ObjectHideFlags: 0

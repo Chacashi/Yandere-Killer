@@ -9,8 +9,8 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private Vector2 limitVerticalAxis;
     private float currentVerticalAxis;
 
-    [Header("Sensitivity")]
-    [Range(0,1),SerializeField] private float sensitivity;
+    [Header("SettingSO")]
+    [SerializeField] private SettingSO setting;
 
     private void OnEnable()
     {
@@ -31,9 +31,9 @@ public class ThirdPersonCameraController : MonoBehaviour
     }
     private void GetInput(Vector2 input)
     {
-        orbital.HorizontalAxis.Value += input.x* sensitivity;
+        orbital.HorizontalAxis.Value += input.x* setting.SensibilityHorizontal;
 
-        currentVerticalAxis -= input.y * sensitivity;
+        currentVerticalAxis -= input.y * setting.SensibilityVertical;
         currentVerticalAxis = math.clamp(currentVerticalAxis, limitVerticalAxis.x, limitVerticalAxis.y);
         orbital.VerticalAxis.Value = currentVerticalAxis;
     }

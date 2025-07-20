@@ -19,3 +19,5 @@ MonoBehaviour:
   masterVolume: 0.6553734
   musicVolume: 0.73338217
   sfxVolume: 0.7925328
+  sensibilityHorizontal: 0.413
+  sensibilityVertical: 0.463
