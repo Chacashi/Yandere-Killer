@@ -1,71 +1,65 @@
-using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class VisionCone : MonoBehaviour
 {
-    public Material VisionConeMaterial;
-    public float VisionRange;
-    public float VisionAngle;
-    public LayerMask VisionObstructingLayer; 
-    public int VisionConeResolution = 120;   
+    [SerializeField] private float VisionRange = 5f;
+    [SerializeField] private float VisionAngle = 90f;
+    [SerializeField] private LayerMask VisionObstructingLayer;
+    [SerializeField] private int VisionConeResolution = 60;
+    [SerializeField] private Color GizmoColor;
 
-    Mesh VisionConeMesh;
-    MeshFilter MeshFilter;
+    private List<Vector3> conePoints = new List<Vector3>();
 
-    void Start()
+    private void Update()
     {
-        transform.AddComponent<MeshRenderer>().material = VisionConeMaterial;
-        MeshFilter = transform.AddComponent<MeshFilter>();
-        VisionConeMesh = new Mesh();
-        VisionAngle *= Mathf.Deg2Rad;
+        CalculateVisionCone();
     }
 
-    void Update()
+    void CalculateVisionCone()
     {
-        DrawVisionCone(); 
-    }
+        conePoints.Clear();
 
-    void DrawVisionCone()
-    {
-        int[] triangles = new int[(VisionConeResolution - 1) * 3];
-        Vector3[] Vertices = new Vector3[VisionConeResolution + 1];
-        Vertices[0] = Vector3.zero;
+        float halfAngle = VisionAngle * 0.5f;
+        float angleStep = VisionAngle / (VisionConeResolution - 1);
 
-        float CurrentAngle = -VisionAngle / 2;
-        float AngleIncrement = VisionAngle / (VisionConeResolution - 1);
-
-        float Sine, Cosine;
+        Vector3 origin = transform.position;
 
         for (int i = 0; i < VisionConeResolution; i++)
         {
-            Sine = Mathf.Sin(CurrentAngle);
-            Cosine = Mathf.Cos(CurrentAngle);
+            float angle = -halfAngle + angleStep * i;
+            float rad = angle * Mathf.Deg2Rad;
 
-            Vector3 RaycastDirection = (transform.forward * Cosine) + (transform.right * Sine);
-            Vector3 VertForward = (Vector3.forward * Cosine) + (Vector3.right * Sine);
+            Vector3 direction = (transform.forward * Mathf.Cos(rad)) + (transform.right * Mathf.Sin(rad));
+            direction.Normalize();
 
-            if (Physics.Raycast(transform.position, RaycastDirection, out RaycastHit hit, VisionRange, VisionObstructingLayer))
+            Vector3 endPoint = origin + direction * VisionRange;
+
+            if (Physics.Raycast(origin, direction, out RaycastHit hit, VisionRange, VisionObstructingLayer))
             {
-                Vertices[i + 1] = VertForward * hit.distance;
-            }
-            else
-            {
-                Vertices[i + 1] = VertForward * VisionRange;
+                endPoint = hit.point;
             }
 
-            CurrentAngle += AngleIncrement;
+            conePoints.Add(endPoint);
         }
+    }
 
-        for (int i = 0, j = 0; i < triangles.Length; i += 3, j++)
+    private void OnDrawGizmos()
+    {
+        if (conePoints == null || conePoints.Count == 0) return;
+
+        Gizmos.color = GizmoColor;
+
+        Vector3 origin = transform.position;
+
+        for (int i = 0; i < conePoints.Count; i++)
         {
-            triangles[i] = 0;
-            triangles[i + 1] = j + 1;
-            triangles[i + 2] = j + 2;
-        }
+            Gizmos.DrawLine(origin, conePoints[i]);
 
-        VisionConeMesh.Clear();
-        VisionConeMesh.vertices = Vertices;
-        VisionConeMesh.triangles = triangles;
-        MeshFilter.mesh = VisionConeMesh;
+            if (i < conePoints.Count - 1)
+            {
+                Gizmos.DrawLine(conePoints[i], conePoints[i + 1]);
+            }
+        }
     }
 }
