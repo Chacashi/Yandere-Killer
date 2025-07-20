@@ -5,6 +5,7 @@ using System.IO;
 [CreateAssetMenu(fileName = "SettingSO", menuName = "Scriptable Objects/SettingSO")]
 public class SettingSO : ScriptableObject
 {
+    [Header("AudioMixer")]
     [SerializeField] private AudioMixer mainMixer;
 
     [Header("Volume Key")]
@@ -23,21 +24,18 @@ public class SettingSO : ScriptableObject
     {
         masterVolume = Mathf.Clamp(volume, 0.0001f, 1f);
         mainMixer.SetFloat(masterKey, Mathf.Log10(volume) * 20);
-        SaveVolumes(); 
     }
 
     public void SetMusicVolume(float volume)
     {
         musicVolume = Mathf.Clamp(volume, 0.0001f, 1f);
         mainMixer.SetFloat(musicKey, Mathf.Log10(volume) * 20);
-        SaveVolumes();
     }
 
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp(volume, 0.0001f, 1f);
         mainMixer.SetFloat(sfxKey, Mathf.Log10(volume) * 20);
-        SaveVolumes();
     }
 
     public void LoadVolumes()

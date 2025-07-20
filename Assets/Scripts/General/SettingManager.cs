@@ -28,6 +28,14 @@ public  class  SettingManager : MonoBehaviour
         UpdateMusicVolume(sliderMusic.value);
         UpdateSFXVolume(sliderSFX.value);
     }
+    private void OnDestroy()
+    {
+        audioSettings.SaveVolumes();
+    }
+    private void OnApplicationQuit()
+    {
+        audioSettings.SaveVolumes();
+    }
     private void UpdateMasterVolume(float value)
     {
         audioSettings.SetMasterVolume(value);
