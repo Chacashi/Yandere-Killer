@@ -7,6 +7,7 @@ public class InputReader : MonoBehaviour
 {
     public static event Action<Vector2> OnMove;
     public static event Action<Vector2> OnMoveCamera;
+    public static event Action OnAtack;
 
     private void OnEnable()
     {
@@ -27,5 +28,12 @@ public class InputReader : MonoBehaviour
     public void MovementCamera(InputAction.CallbackContext context)
     {
         OnMoveCamera?.Invoke(context.ReadValue<Vector2>().normalized);
+    }
+    public void Attack(InputAction.CallbackContext context)
+    {
+        if (context.performed && PlayerActionManager.Instance != null)
+        {
+            PlayerActionManager.Instance.ToggleAttackState();
+        }
     }
 }
